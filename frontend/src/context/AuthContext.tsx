@@ -39,6 +39,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    const clearUrlHash = () => {
+      if (window.location.href.includes('#')) {
+        window.history.replaceState(
+          null,
+          '',
+          window.location.pathname + window.location.search
+        );
+      }
+    };
+
+    // Clear hash immediately on mount if present
+    clearUrlHash();
+    const mountTimer = setTimeout(clearUrlHash, 100);
+
     // 1. Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -46,6 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         syncProfileToBackend(session.user);
       }
       setLoading(false);
+      clearUrlHash();
+      setTimeout(clearUrlHash, 100);
     });
 
     // 2. Listen for auth changes
@@ -55,6 +71,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (event === 'SIGNED_IN' && currentUser) {
         await syncProfileToBackend(currentUser);
+        clearUrlHash();
+        setTimeout(clearUrlHash, 100);
       }
       
       setLoading(false);
@@ -62,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => {
       subscription.unsubscribe();
+      clearTimeout(mountTimer);
     };
   }, []);
 

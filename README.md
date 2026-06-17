@@ -18,8 +18,9 @@ MindForge is a full-stack, AI-powered study platform that transforms documents i
 ### 🔐 Authentication
 
 - Secure Email & Password Sign Up / Login
+- **Google Sign-In / OAuth integration** ("Continue with Google") on Login and Signup pages
 - Secure password recovery (Forgot Password & Reset Password flows)
-- Profile mapping inside PostgreSQL synced automatically via Supabase UUIDs
+- Profile mapping inside PostgreSQL synced automatically via Supabase UUIDs (including OAuth display name and avatar synchronization)
 - Secure JWT-based request authorization using Express middleware
 
 ### 📚 Subject & Resource Management
