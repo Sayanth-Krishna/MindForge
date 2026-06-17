@@ -1,0 +1,18 @@
+{
+  "short_name": "MindForge",
+  "name": "MindForge - AI Study Workspace",
+  "description": "AI-powered study platform that transforms documents into interactive learning experiences through RAG, AI chat, flashcards, and quizzes.",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#09090b",
+  "theme_color": "#8B5CF6",
+  "display": "standalone",
+  "orientation": "portrait"
+}

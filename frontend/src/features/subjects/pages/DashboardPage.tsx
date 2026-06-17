@@ -113,6 +113,8 @@ export const DashboardPage: React.FC = () => {
 
 	return (
 		<div className="p-6 max-w-6xl mx-auto space-y-8 animate-fade-in">
+			<title>Study Dashboard | MindForge</title>
+			<meta name="description" content="Manage your subjects, upload course handouts or notes, and interact with your files through RAG chat, dynamic flashcards, and quizzes." />
 			{/* Header Welcome banner */}
 			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-6">
 				<div>

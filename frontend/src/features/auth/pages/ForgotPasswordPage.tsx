@@ -35,6 +35,8 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4 relative overflow-hidden">
+      <title>Forgot Password | MindForge</title>
+      <meta name="description" content="Request a password recovery link for your MindForge account to regain access to your AI study guide and materials." />
       {/* Dynamic Background Blurs */}
       <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse-slow"></div>
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow"></div>

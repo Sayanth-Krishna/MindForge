@@ -616,6 +616,15 @@ export const SubjectDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background/95 pb-10">
+      <title>{`${subject?.name || 'Loading Subject...'} | MindForge`}</title>
+      <meta 
+        name="description" 
+        content={
+          subject?.description 
+            ? `${subject.name} - ${subject.description}. Upload study notes, converse with documents via AI RAG chat, and generate customized flashcards and quizzes.`
+            : `Study workspace for ${subject?.name || 'your subject'}. Upload study notes, converse with documents via AI RAG chat, and generate customized flashcards and quizzes.`
+        } 
+      />
       {/* Subject Header */}
       <div className="h-14 px-6 border-b border-border/60 flex items-center justify-between bg-card/10 backdrop-blur-md sticky top-0 z-20">
         <div className="flex items-center gap-3 animate-fade-in">

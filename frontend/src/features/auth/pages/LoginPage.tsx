@@ -80,6 +80,8 @@ export const LoginPage: React.FC = () => {
 
 	return (
 		<div className="min-h-screen lg:h-screen bg-background text-foreground grid grid-cols-1 lg:grid-cols-12 overflow-y-auto lg:overflow-hidden">
+			<title>Sign In | MindForge</title>
+			<meta name="description" content="Sign in to your MindForge account to access your AI study companion, documents, flashcards, and practice quizzes." />
 			{/* Left Column: Branding and Product Feature Explanations (Desktop only) */}
 			<div className="hidden lg:flex lg:col-span-7 bg-card border-r border-border relative flex-col justify-between p-8 xl:p-12 overflow-hidden h-full">
 				{/* Dynamic Background Blurs */}
