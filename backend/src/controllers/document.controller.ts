@@ -58,6 +58,7 @@ export const uploadDocument = async (
 
     // 2. Parse PDF and extract pages text
     const parsedPages = await pdfService.parsePdf(file.buffer);
+    const totalChars = parsedPages.reduce((acc, p) => acc + p.text.length, 0);
 
     // 3. Create Document entry in Neon Postgres
     const document = await prisma.document.create({
@@ -79,10 +80,25 @@ export const uploadDocument = async (
         chunks.push(...pageChunks);
       }
 
+      // Add temporary logging for pipeline trace
+      const batchesCount = Math.ceil(chunks.length / 100);
+      console.log(`[Upload Pipeline Log] Uploaded file: ${file.originalname}`);
+      console.log(`- PDF page count: ${parsedPages.length}`);
+      console.log(`- Total extracted characters: ${totalChars}`);
+      console.log(`- Number of chunks: ${chunks.length}`);
+      console.log(`- Number of Gemini embedding requests (items): ${chunks.length}`);
+      console.log(`- Number of batches sent: ${batchesCount}`);
+
+      const startTime = Date.now();
+
       // 5. Generate embeddings and bulk save to vector database
       if (chunks.length > 0) {
         await ragService.storeDocumentChunks(document.id, chunks);
       }
+
+      const durationMs = Date.now() - startTime;
+      console.log(`- Time spent generating embeddings: ${durationMs}ms`);
+
     } catch (processingError) {
       console.error('Error processing document chunks/embeddings. Cleaning up document record...', processingError);
       // Clean up the document record to avoid orphaned database entries

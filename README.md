@@ -2,6 +2,8 @@
 
 MindForge is a full-stack, AI-powered study platform that transforms documents into interactive learning experiences through RAG, AI chat, flashcards, and quizzes. By leveraging retrieval-augmented generation (RAG), vector databases, and large language models, it allows students to upload PDFs and semantically search, chat, summarize, and generate flashcards or quizzes from their study materials.
 
+🔗 **Live Preview:** [https://mind-forge-omega.vercel.app](https://mind-forge-omega.vercel.app/)
+
 **Frontend:** React (Vite), TypeScript, Tailwind CSS (v4), TanStack React Query  
 **Backend:** Node.js, Express, TypeScript  
 **Database:** PostgreSQL (Neon) with `pgvector` extension  

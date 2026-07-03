@@ -43,9 +43,16 @@ export const retryWithBackoff = async <T>(
     try {
       return await fn();
     } catch (error: any) {
-      const isRateLimit = error.status === 429 || error.statusCode === 429 || 
+      const isDailyQuotaExceeded = error.message && (
+        error.message.includes('quota') || 
+        error.message.includes('Quota exceeded') ||
+        error.message.includes('billing')
+      );
+
+      const isRateLimit = (error.status === 429 || error.statusCode === 429 || 
                           (error.message && error.message.includes('429')) ||
-                          (error.message && error.message.includes('Quota exceeded'));
+                          (error.message && error.message.includes('Quota exceeded'))) &&
+                          !isDailyQuotaExceeded;
       
       if (isRateLimit && attempt < retries - 1) {
         let parsedDelayMs: number | undefined;
@@ -112,8 +119,12 @@ export const getBatchEmbeddings = async (texts: string[]): Promise<number[][]> =
     }
     
     return results;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error generating batch embeddings:', error);
+    if (error.status === 429 || error.statusCode === 429 || error.message?.includes('429') || error.message?.includes('quota')) {
+      error.status = 429;
+      throw error;
+    }
     throw new Error('Failed to generate text embeddings in batch');
   }
 };

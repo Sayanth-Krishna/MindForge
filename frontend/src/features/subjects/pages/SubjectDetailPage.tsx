@@ -182,9 +182,26 @@ export const SubjectDetailPage: React.FC = () => {
       setFile(null);
       setUploadProgress('Success!');
       refetchDocuments();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Upload error:', err);
-      toast.error('Upload failed: Please make sure it is a valid PDF under 10MB.');
+      const serverMessage = err.response?.data?.message;
+      const isQuotaError = err.response?.status === 429 || 
+                          (serverMessage && (
+                            serverMessage.toLowerCase().includes('quota') || 
+                            serverMessage.toLowerCase().includes('rate limit') || 
+                            serverMessage.toLowerCase().includes('limit') ||
+                            serverMessage.toLowerCase().includes('too many requests')
+                          ));
+      
+      if (isQuotaError) {
+        let displayMessage = serverMessage || 'Gemini API Daily Quota Exceeded. Please try again tomorrow or upgrade your plan.';
+        if (displayMessage.length > 200 || displayMessage.includes('{') || displayMessage.includes('[')) {
+          displayMessage = 'Gemini API Daily Quota Exceeded. Please check your plan and billing details in Google AI Studio, or try again tomorrow.';
+        }
+        toast.error(`Upload failed: ${displayMessage}`);
+      } else {
+        toast.error('Upload failed: Please make sure it is a valid PDF under 10MB.');
+      }
     } finally {
       setUploading(false);
       setUploadProgress('');

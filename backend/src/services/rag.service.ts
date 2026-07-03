@@ -53,8 +53,12 @@ export const storeDocumentChunks = async (
         })
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error storing document chunks in pgvector:', error);
+    if (error.status === 429 || error.statusCode === 429 || error.message?.includes('429') || error.message?.includes('quota')) {
+      error.status = 429;
+      throw error;
+    }
     throw new Error('Failed to create and index document vectors');
   }
 };

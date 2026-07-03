@@ -6,6 +6,14 @@ const PORT = env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`🚀 MindForge API Server successfully started on port ${PORT}`);
   console.log(`Server Mode: ${env.NODE_ENV}`);
+  
+  // Verify API Key masking first/last chars
+  const apiKey = env.GEMINI_API_KEY || '';
+  const maskedKey = apiKey.length > 8 
+    ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` 
+    : 'invalid-or-empty';
+  console.log(`[API Key Check] GEMINI_API_KEY used: ${maskedKey} (Length: ${apiKey.length})`);
+  
   console.log(`Press Ctrl+C to terminate process`);
 });
 
