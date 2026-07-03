@@ -172,6 +172,7 @@ Create a `.env` file in the `backend/` directory matching the following structur
 ```env
 PORT=5000
 NODE_ENV=development
+FRONTEND_URL="http://localhost:5173"
 
 # Neon PostgreSQL Database with pgvector extension enabled
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?sslmode=require"
