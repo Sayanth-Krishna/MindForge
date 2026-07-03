@@ -121,6 +121,7 @@ MindForge is a full-stack, AI-powered study platform that transforms documents i
    ├─ package.json
    ├─ tsconfig.json
    ├─ vite.config.ts
+   ├─ vercel.json
    └─ src
       ├─ App.css
       ├─ App.tsx
