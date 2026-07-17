@@ -24,7 +24,7 @@ interface Subject {
 }
 
 export const DashboardLayout: React.FC = () => {
-	const { user, loading, signOut } = useAuth();
+	const { user, loading, syncing, signOut } = useAuth();
 	const navigate = useNavigate();
 	const { subjectId } = useParams<{ subjectId?: string }>();
 
@@ -55,13 +55,13 @@ export const DashboardLayout: React.FC = () => {
 	}, [user, loading, navigate]);
 
 	// Fetch subjects for sidebar navigation list
-	const { data: subjects, refetch: refetchSubjects } = useQuery<Subject[]>({
+	const { data: subjects, refetch: refetchSubjects, isLoading: subjectsLoading } = useQuery<Subject[]>({
 		queryKey: ["subjects"],
 		queryFn: async () => {
 			const response = await api.get("/subjects");
 			return response.data.data;
 		},
-		enabled: !!user,
+		enabled: !!user && !syncing,
 	});
 
 	const [newSubjectName, setNewSubjectName] = useState("");
@@ -96,17 +96,42 @@ export const DashboardLayout: React.FC = () => {
 		}
 	};
 
-	if (loading || !user) {
+	if (loading || syncing || (user && subjectsLoading)) {
 		return (
-			<div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-				<div className="flex flex-col items-center gap-4">
-					<div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-					<p className="text-muted-foreground text-sm font-medium animate-pulse">
-						Loading MindForge...
-					</p>
+			<div className="min-h-screen bg-background text-foreground flex items-center justify-center relative overflow-hidden">
+				{/* Dynamic Background Blurs */}
+				<div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+				<div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+
+				<div className="flex flex-col items-center gap-6 z-10">
+					{/* Logo with subtle floating/pulsing effect */}
+					<div className="relative">
+						<div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+						<img
+							src={logo}
+							alt="MindForge Logo"
+							className="h-16 w-auto object-contain relative animate-bounce-slow"
+						/>
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<span className="font-extrabold text-3xl tracking-tight bg-linear-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+							MindForge
+						</span>
+						<p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase animate-pulse">
+							Preparing your study room...
+						</p>
+					</div>
+					{/* Sleek progress indicator bar */}
+					<div className="w-48 h-1 bg-secondary/80 rounded-full overflow-hidden relative">
+						<div className="absolute inset-y-0 left-0 w-1/2 bg-linear-to-r from-primary to-purple-500 rounded-full animate-progress-loading"></div>
+					</div>
 				</div>
 			</div>
 		);
+	}
+
+	if (!user) {
+		return null;
 	}
 
 	return (
