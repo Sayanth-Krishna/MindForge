@@ -36,21 +36,40 @@ export const storeDocumentChunks = async (
     for (let i = 0; i < chunksWithVectors.length; i += dbBatchSize) {
       const batch = chunksWithVectors.slice(i, i + dbBatchSize);
 
-      await prisma.$transaction(
-        batch.map((chunk) => {
-          const id = crypto.randomUUID();
-          const vectorString = `[${chunk.vector.join(',')}]`;
+      const valuesPlaceholders: string[] = [];
+      const params: any[] = [];
+      let paramIndex = 1;
 
-          return prisma.$executeRawUnsafe(
-            `INSERT INTO "DocumentChunk" (id, "documentId", content, "pageNumber", embedding)
-             VALUES ($1, $2, $3, $4, $5::vector)`,
-            id,
-            documentId,
-            chunk.content,
-            chunk.pageNumber,
-            vectorString
-          );
-        })
+      for (const chunk of batch) {
+        const id = crypto.randomUUID();
+        const vectorString = `[${chunk.vector.join(',')}]`;
+
+        valuesPlaceholders.push(
+          `($${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}, $${paramIndex + 3}, $${paramIndex + 4}::vector)`
+        );
+
+        params.push(
+          id,
+          documentId,
+          chunk.content,
+          chunk.pageNumber,
+          vectorString
+        );
+        paramIndex += 5;
+      }
+
+      const sql = `
+        INSERT INTO "DocumentChunk" (id, "documentId", content, "pageNumber", embedding)
+        VALUES ${valuesPlaceholders.join(', ')}
+      `;
+
+      await prisma.$transaction(
+        [
+          prisma.$executeRawUnsafe(sql, ...params)
+        ],
+        {
+          timeout: 30000, // 30-second timeout safety margin for production cross-region latency
+        }
       );
     }
   } catch (error: any) {
